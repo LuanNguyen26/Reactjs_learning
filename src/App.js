@@ -1,104 +1,37 @@
-import logo from './logo.svg';
-import './App.css';
+import 'react-perfect-scrollbar/dist/css/styles.css';
+import React, { useEffect, useState } from 'react';
+import { useRoutes } from 'react-router-dom';
+import { ThemeProvider, Button } from '@material-ui/core';
+import GlobalStyles from 'src/components/GlobalStyles';
+import 'src/mixins/chartjs';
+import theme from 'src/theme';
+import routes from 'src/routes';
+import { useCookies } from 'react-cookie';
+import LoginView from 'src/views/auth/LoginView';
 
-import TopBanner from './Module/TopBanner/TopBanner';
+const App = () => {
+  const [cookies] = useCookies(['token']);
+  const [isLogedIn, setIsLogedIn] = useState(false);
 
-import TrangChu from './Pages/TrangChu';
-import TrangChiTietSanPham from './Pages/TrangChiTietSanPham';
-import TrangLienHe from './Pages/TrangLienHe';
-import TrangGioHang from './Pages/TrangGioHang';
-import TrangThanhToan from './Pages/TrangThanhToan';
+  const handleTestCookie = () => {
+  };
 
-import Footer from './Module/Footer/Footer';
+  useEffect(() => {
+    console.log(cookies.token);
+    if (cookies && cookies.token) {
+      setIsLogedIn(true);
+    }
+  }, []);
 
-import ButtonGoToGioHang from './Module/ButtonGoToGioHang';
-
-import { useState } from 'react';
-import {
-  Link,
-  Route,
-  BrowserRouter as Router,
-  Switch
-} from 'react-router-dom';
-import TrangTestMaterialUI from './Pages/TrangTestMaterialUI';
-import TrangTimKiem from './Pages/TrangTimKiem';
-import FormChat from './Module/FormChat';
-
-import UploadFile from './Module/UploadFile';
-import TrangTruyXuatDonHang from './Pages/TrangTruyXuatDonHang';
-
-
-function App() {
-  let abc = 'Chào các bạn';
-
-  const[load_top_banner, SetLoadTopBanner] = useState(true);
-
-
-  const handleUnMountTopBanner = () => {
-    SetLoadTopBanner(false);
-  }
+  const routing = useRoutes(routes);
 
   return (
-    <>
-    
-      <Router>
-      
-      {
-        (load_top_banner)?
-        <TopBanner title_page={"Hung " + "Store " + Math.round(Math.random() * 100)} delete_me={handleUnMountTopBanner} />
-        :
-        null
-      }
-
-      
-        
-        <Switch>
-
-          <Route path='/chi-tiet/:id_san_pham'>
-            <TrangChiTietSanPham />
-          </Route>
-
-          <Route path='/lien-he'>
-            <TrangLienHe />
-          </Route>
-
-          <Route path='/gio-hang'>
-            <TrangGioHang />
-          </Route>
-
-          <Route path='/thanh-toan'>
-            <TrangThanhToan />
-          </Route>
-
-          <Route path='/test-material-ui'>
-            <TrangTestMaterialUI />
-          </Route>
-
-          <Route path='/tim-kiem'>
-            <TrangTimKiem />
-          </Route>
-
-          <Route path='/don-hang/:ma_truy_xuat_dh'>
-            <TrangTruyXuatDonHang />
-          </Route>
-
-          <Route path='/'>
-            <TrangChu />
-          </Route>
-        </Switch>
-
-      
-      <ButtonGoToGioHang />
-      <Footer />
-
-      </Router>
-
-      <FormChat />
-
-      <UploadFile />
-
-    </>
+    <ThemeProvider theme={theme}>
+      <GlobalStyles />
+      {(isLogedIn) ? routing : <LoginView processLogedInState={setIsLogedIn} />}
+      <Button onClick={handleTestCookie}>test</Button>
+    </ThemeProvider>
   );
-}
+};
 
 export default App;
